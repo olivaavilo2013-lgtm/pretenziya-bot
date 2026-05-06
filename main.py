@@ -102,27 +102,27 @@ def p(text) -> str:
 # ========= ШРИФТ =========
 def register_font():
     paths = [
-        "DejaVuSans.ttf",
-        "./DejaVuSans.ttf",
         "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+        "/usr/share/fonts/truetype/dejavu/DejaVuSansCondensed.ttf",
         "/usr/share/fonts/dejavu/DejaVuSans.ttf",
-        "/Library/Fonts/Arial Unicode.ttf",
         "C:/Windows/Fonts/arial.ttf",
+        "/Library/Fonts/Arial Unicode.ttf",
     ]
 
     for path in paths:
         if os.path.exists(path):
-            pdfmetrics.registerFont(TTFont("MainFont", path))
-            return "MainFont"
+            try:
+                pdfmetrics.registerFont(TTFont("MainFont", path))
+                print(f"Шрифт найден: {path}")
+                return "MainFont"
+            except Exception as e:
+                print(f"Ошибка загрузки шрифта {path}: {e}")
 
-    raise RuntimeError(
-        "Не найден шрифт DejaVuSans.ttf. "
-        "Положи файл DejaVuSans.ttf рядом с bot.py или main.py"
-    )
+    print("Шрифт не найден. Используется Helvetica.")
+    return "Helvetica"
 
 
 FONT = register_font()
-
 
 # ========= ПРОВЕРКИ =========
 def is_valid_inn(inn: str) -> bool:
