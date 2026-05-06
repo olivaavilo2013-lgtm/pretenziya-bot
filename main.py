@@ -101,24 +101,25 @@ def p(text) -> str:
 
 # ========= ШРИФТ =========
 def register_font():
-    paths = [
-        "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
-        "/usr/share/fonts/truetype/dejavu/DejaVuSansCondensed.ttf",
-        "/usr/share/fonts/dejavu/DejaVuSans.ttf",
+    search_dirs = [
+        "/nix/store",
+        "/usr/share/fonts",
+        "/app",
     ]
 
-    for path in paths:
-        print("Проверяю шрифт:", path)
+    for root in search_dirs:
+        print("Ищу шрифт в:", root)
 
-        if os.path.exists(path):
-            pdfmetrics.registerFont(TTFont("MainFont", path))
-            print("✅ Используется шрифт:", path)
-            return "MainFont"
+        if os.path.isdir(root):
+            for dirpath, dirnames, filenames in os.walk(root):
+                for filename in filenames:
+                    if filename == "DejaVuSans.ttf":
+                        font_path = os.path.join(dirpath, filename)
+                        pdfmetrics.registerFont(TTFont("MainFont", font_path))
+                        print("✅ Используется шрифт:", font_path)
+                        return "MainFont"
 
-    raise RuntimeError(
-        "❌ Кириллический шрифт не найден. "
-        "Нужно установить fonts-dejavu-core."
-    )
+    raise RuntimeError("❌ DejaVuSans.ttf не найден")
 
 
 FONT = register_font()
