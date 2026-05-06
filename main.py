@@ -105,21 +105,20 @@ def register_font():
         "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
         "/usr/share/fonts/truetype/dejavu/DejaVuSansCondensed.ttf",
         "/usr/share/fonts/dejavu/DejaVuSans.ttf",
-        "C:/Windows/Fonts/arial.ttf",
-        "/Library/Fonts/Arial Unicode.ttf",
     ]
 
     for path in paths:
-        if os.path.exists(path):
-            try:
-                pdfmetrics.registerFont(TTFont("MainFont", path))
-                print(f"Шрифт найден: {path}")
-                return "MainFont"
-            except Exception as e:
-                print(f"Ошибка загрузки шрифта {path}: {e}")
+        print("Проверяю шрифт:", path)
 
-    print("Шрифт не найден. Используется Helvetica.")
-    return "Helvetica"
+        if os.path.exists(path):
+            pdfmetrics.registerFont(TTFont("MainFont", path))
+            print("✅ Используется шрифт:", path)
+            return "MainFont"
+
+    raise RuntimeError(
+        "❌ Кириллический шрифт не найден. "
+        "Нужно установить fonts-dejavu-core."
+    )
 
 
 FONT = register_font()
